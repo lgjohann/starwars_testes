@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/planets")
 public class PlanetController {
@@ -30,5 +32,18 @@ public class PlanetController {
     public ResponseEntity<Planet> getByName(@PathVariable("name") String name) {
         return planetService.getByName(name).map(planet -> ResponseEntity.ok(planet))
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Planet>> list(@RequestParam(required = false) String terrain,
+                                             @RequestParam(required = false) String climate) {
+        List<Planet> planets = planetService.list(terrain, climate);
+        return ResponseEntity.ok(planets);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> remove(@PathVariable("id") Long id) {
+        planetService.remove(id);
+        return ResponseEntity.noContent().build();
     }
 }
