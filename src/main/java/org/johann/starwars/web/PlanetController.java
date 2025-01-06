@@ -1,5 +1,6 @@
 package org.johann.starwars.web;
 
+import jakarta.validation.Valid;
 import org.johann.starwars.domain.Planet;
 import org.johann.starwars.domain.PlanetService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class PlanetController {
     private PlanetService planetService;
 
     @PostMapping
-    public ResponseEntity<Planet> create(@RequestBody Planet planet) {
+    public ResponseEntity<Planet> create(@RequestBody @Valid Planet planet) {
         Planet planetCreated = planetService.create(planet);
         return ResponseEntity.status(HttpStatus.CREATED).body(planetCreated);
     }
