@@ -3,6 +3,7 @@ package org.johann.starwars.web;
 import static org.johann.starwars.common.PlanetConstants.PLANET;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -18,6 +19,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Optional;
 
 @WebMvcTest(PlanetController.class)
 public class PlanetControllerTest {
@@ -67,5 +70,22 @@ public class PlanetControllerTest {
                 post("/planets")
                     .content(objectMapper.writeValueAsString(PLANET)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    public void getPlanet_ByExistingId_ReturnsPlanet() throws Exception {
+        when(planetService.get(1L)).thenReturn(Optional.of(PLANET));
+
+        mockMvc.perform(
+                get("/planets/{id}", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(PLANET));
+
+    }
+
+    @Test
+    public void getPlanet_ByUnexistingId_ReturnsNotFound() throws Exception {
+        mockMvc.perform(get("/planets/{id}", 1L))
+                .andExpect(status().isNotFound());
     }
 }
