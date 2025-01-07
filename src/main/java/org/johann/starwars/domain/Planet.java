@@ -8,7 +8,6 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 @Entity
 @Table(name = "planets")
 public class Planet {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,7 +24,8 @@ public class Planet {
     @Column(nullable = false)
     private String terrain;
 
-    public Planet() {}
+    public Planet() {
+    }
 
     public Planet(String climate, String terrain) {
         this.climate = climate;
@@ -33,7 +33,13 @@ public class Planet {
     }
 
     public Planet(String name, String climate, String terrain) {
+        this.name = name;
+        this.climate = climate;
+        this.terrain = terrain;
+    }
 
+    public Planet(Long id, String name, String climate, String terrain) {
+        this.id = id;
         this.name = name;
         this.climate = climate;
         this.terrain = terrain;
@@ -75,4 +81,10 @@ public class Planet {
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(obj, this);
     }
+
+    @Override
+    public String toString() {
+        return "Planet [climate=" + climate + ", id=" + id + ", name=" + name + ", terrain=" + terrain + "]";
+    }
+
 }
